@@ -7,28 +7,20 @@ include('headers.php');
 if ($_SERVER['REQUEST_METHOD'] == "OPTIONS") {
     http_response_code(200);
 } else if ($_SERVER['REQUEST_METHOD'] == "GET") {
-    $sql = "select t.*, count(r.person) as nb_participants from (SELECT c.id as id_user, b.code as type_activity, a.id as id_activity, a.name, a.time, a.minpeople, a.maxpeople, a.location, a.city, c.name as user_name, c.avatar FROM z_activity a, type_activity b, z_user c where a.isdeleted = 0 and a.person = c.id and a.type = b.id) t left join relation_participant r on t.id_activity = r.activity group by t.type_activity, t.name, t.time, t.minpeople, t.maxpeople, t.location, t.city, t.user_name, t.avatar order by time desc";
+    $sql = "select * from goal order by ts desc";
 
     $i = 0;
 
     if ($result = $mysqli->query($sql)) {
         while ($row = $result->fetch_object()) {
-            if (!isset($row->avatar)) {
+            /*if (!isset($row->avatar)) {
                 $row->avatar = 'images/avatars/anonymous_mask.png';
-            }
+            }*/
 
-            $json[$i] = array("type" => $row->type_activity,
-                "name" => $row->name,
-                "date" => $row->time,
-                "location" => $row->location,
-                "city" => $row->city,
-                "host" => $row->user_name,
-                "minpeople" => $row->minpeople,
-                "maxpeople" => $row->maxpeople,
-                "nbparticipants" => $row->nb_participants,
-                "avatar" => stripslashes($row->avatar),
-                "id_activity" => $row->id_activity,
-                "id_user" => $row->id_user);
+            $json[$i] = array("name" => $row->name,
+                "age" => $row->age,
+                "comment" => $row->comment,
+                "ts" => $row->ts);
 
             $i++;
         }

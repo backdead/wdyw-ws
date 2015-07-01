@@ -1,7 +1,7 @@
 <?php
 
 include('db.php');
-include('fonction.php');
+//include('fonction.php');
 include('headers.php');
 
 if ($_SERVER['REQUEST_METHOD'] == "OPTIONS") {
@@ -10,29 +10,27 @@ if ($_SERVER['REQUEST_METHOD'] == "OPTIONS") {
     $sql = "select * from goal order by ts desc";
 
     $i = 0;
+   
 
     if ($result = $mysqli->query($sql)) {
         while ($row = $result->fetch_object()) {
-            /*if (!isset($row->avatar)) {
-                $row->avatar = 'images/avatars/anonymous_mask.png';
-            }*/
-
+  
             $json[$i] = array("name" => $row->name,
                 "age" => $row->age,
                 "comment" => $row->comment,
                 "ts" => $row->ts);
-
+  
             $i++;
         }
         $result->close();
     }
     $mysqli->close();
-
     echo json_encode($json);
-} else if ($_SERVER['REQUEST_METHOD'] == "POST") {
+} 
+/*else if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $token = $_SERVER['HTTP_TKN'];
     $userId = checkToken($token);
-
+    
     if (isset($userId)) {
         $json = file_get_contents('php://input');
 
@@ -78,36 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] == "OPTIONS") {
 
             $mysqli->close();
             
-        } else if($obj['treatment'] == "CANCEL") {
-            $idActivity = $obj['id'];
-            
-            $sql1 = "delete from relation_participant where activity = '$idActivity';";
-            $sql2 = "update z_activity set isdeleted = 1, ts = CURRENT_TIMESTAMP where id = '$idActivity';";
-            
-            $result = $mysqli->query($sql1);
-            
-            $ok = 0;
-            if ($mysqli->query($sql2)) {
-               $ok += $mysqli->affected_rows;
-            }
-            
-            unset($sql1);
-            unset($sql2);
-            unset($result);
-            
-            if($ok == 1) {
-                $res = array("status" => 'OK');
-            } else {
-                $res = array("status" => 'ACTIVITY_CANCELATION_FAILED');
-            }
-            
-            $mysqli->close();
         }
-    } else {
-        $res = array("status" => 'AUTH_FAILED');
     }
     echo json_encode($res);
-} else {
+} */
+else {
     http_response_code(403);
 }
 ?>
